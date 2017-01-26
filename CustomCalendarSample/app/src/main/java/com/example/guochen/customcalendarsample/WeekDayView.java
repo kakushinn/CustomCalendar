@@ -21,10 +21,15 @@ public class WeekDayView extends View {
     private int mWeedayColor = Color.parseColor("#1FC2F3");
     //周六、周日的颜色
     private int mWeekendColor = Color.parseColor("#fa4451");
+    //获取星期的TitleBar
     private String[] weekString = new String[]{"日","一","二","三","四","五","六"};
+    //星期的字体大小
     private int mWeekSize = 14;
+    //获取屏幕参数
     private DisplayMetrics displayMetrics;
+    //Context
     private Context mContext;
+    
     public WeekDayView(Context context) {
         super(context);
         mContext = context;
