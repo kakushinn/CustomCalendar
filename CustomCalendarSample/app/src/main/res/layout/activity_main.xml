@@ -8,4 +8,8 @@
         android:layout_marginTop="30dp"
         android:layout_width="match_parent"
         android:layout_height="30dp"/>
+    <com.example.guochen.customcalendarsample.CalendarView
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_marginTop="5dp"/>
 </LinearLayout>
