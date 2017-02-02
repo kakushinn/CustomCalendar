@@ -19,6 +19,7 @@ public class CalendarView extends View {
     private int mRow = 6;
     private Paint mPaint;
     private int mCurrYear,mCurrMonth,mCurrDay;
+    private int selectedYear,selectedMonth,selectedDay;
     private DisplayMetrics metrics;
     private int[][] dayStrings;
     private int mColumnSize;
@@ -33,8 +34,11 @@ public class CalendarView extends View {
         mPaint = new Paint();
         metrics = context.getResources().getDisplayMetrics();
         mCurrYear = calendar.get(java.util.Calendar.YEAR);
+        selectedYear = mCurrYear;
         mCurrMonth = calendar.get(java.util.Calendar.MONTH);
+        selectedMonth = mCurrMonth;
         mCurrDay = calendar.get(java.util.Calendar.DATE);
+        selectedDay = mCurrDay;
         dayStrings = new int[6][7];
     }
 
@@ -65,7 +69,7 @@ public class CalendarView extends View {
         String dayString;
         int mDaysOfMonth = getMonthDays(selYear,selMonth);
         int mWeekOfFirstDayInMonth = getFirstDayWeek(selYear,selMonth);
-        for(int day = 1; day < mDaysOfMonth ; day++){
+        for(int day = 1; day <= mDaysOfMonth ; day++){
             dayString = day + "";
             int column = (day + mWeekOfFirstDayInMonth - 2)%7;
             int row = (day + mWeekOfFirstDayInMonth -2)/7;
@@ -74,8 +78,15 @@ public class CalendarView extends View {
             int startY = (row * mRowSize + mRowSize/2 - (int)(mPaint.ascent() + mPaint.descent())/2);
 
             int a = java.util.Calendar.DAY_OF_MONTH;
-            if(day == mCurrDay)
+            if(day == selectedDay)
             {
+
+                int startRecX = column * mColumnSize;
+                int startRecY = row * mRowSize;
+                int endRecX = (column + 1) * mColumnSize;
+                int endRecY = (row + 1) * mRowSize;
+                mPaint.setColor(Color.parseColor("#1fc2f3"));
+                canvas.drawRect(startRecX,startRecY,endRecX,endRecY,mPaint);
                 mPaint.setColor(Color.parseColor("#ff0000"));
             }
             else{
