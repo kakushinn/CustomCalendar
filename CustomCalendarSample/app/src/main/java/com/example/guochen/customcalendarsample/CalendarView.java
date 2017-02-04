@@ -8,6 +8,7 @@ import android.icu.util.Calendar;
 import android.text.format.DateUtils;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.view.MotionEvent;
 import android.view.View;
 
 /**
@@ -67,7 +68,7 @@ public class CalendarView extends View {
         mPaint.setAntiAlias(true);
         mPaint.setTextSize(metrics.scaledDensity * daySize);
         String dayString;
-        int mDaysOfMonth = getMonthDays(selYear,selMonth);
+        int mDaysOfMonth = getMonthDays(selYear, selMonth);
         int mWeekOfFirstDayInMonth = getFirstDayWeek(selYear,selMonth);
         for(int day = 1; day <= mDaysOfMonth ; day++){
             dayString = day + "";
@@ -95,6 +96,36 @@ public class CalendarView extends View {
 
             canvas.drawText(dayString,startX,startY,mPaint);
         }
+    }
+
+    private void updateSelectDay(int clickX, int clickY){
+        int column = clickX/mColumnSize;
+        int row = clickY/mRowSize;
+        selectedDay = dayStrings[row][column];
+    }
+    int downX = 0;
+    int downY = 0;
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+
+        switch(event.getAction())
+        {
+            case MotionEvent.ACTION_DOWN:
+                downX =(int) event.getX();
+                downY =(int) event.getY();
+                break;
+            case MotionEvent.ACTION_MOVE:
+                break;
+            case MotionEvent.ACTION_UP:
+                int upX = (int)event.getX();
+                int upY = (int)event.getY();
+                if(Math.abs(upX - downX) < 10 && Math.abs(upY - downY) < 10){
+                    updateSelectDay((upX + downX)/2,(upY + downY)/2);
+                    invalidate();
+                }
+                break;
+        }
+        return true;
     }
 
     private void initSize()
