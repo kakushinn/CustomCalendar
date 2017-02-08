@@ -10,6 +10,7 @@ import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Toast;
 
 /**
  * Created by Administrator on 2017/1/28.
@@ -70,6 +71,7 @@ public class CalendarView extends View {
         String dayString;
         int mDaysOfMonth = getMonthDays(selYear, selMonth);
         int mWeekOfFirstDayInMonth = getFirstDayWeek(selYear,selMonth);
+        Toast.makeText(mContext,selectedYear+"/"+(selectedMonth+1)+"/"+selectedDay,Toast.LENGTH_SHORT).show();
         for(int day = 1; day <= mDaysOfMonth ; day++){
             dayString = day + "";
             int column = (day + mWeekOfFirstDayInMonth - 2)%7;
@@ -103,6 +105,18 @@ public class CalendarView extends View {
         int row = clickY/mRowSize;
         selectedDay = dayStrings[row][column];
     }
+
+    private void updateCurrentDate(int oneMonth){
+        java.util.Calendar calendar = java.util.Calendar.getInstance();
+        calendar.set(selectedYear,selectedMonth,1);
+        calendar.add(java.util.Calendar.MONTH, oneMonth);
+        selectedYear = calendar.get(java.util.Calendar.YEAR);
+        selYear = selectedYear;
+        selectedMonth = calendar.get(java.util.Calendar.MONTH);
+        selMonth = selectedMonth;
+        selectedDay = calendar.get(java.util.Calendar.DAY_OF_MONTH);
+    }
+
     int downX = 0;
     int downY = 0;
     @Override
@@ -122,6 +136,13 @@ public class CalendarView extends View {
                 if(Math.abs(upX - downX) < 10 && Math.abs(upY - downY) < 10){
                     updateSelectDay((upX + downX)/2,(upY + downY)/2);
                     invalidate();
+                }else if(upX - downX > 30)
+                {
+                    updateCurrentDate(-1);
+                    invalidate();
+                }else if(upX - downX < -30) {
+                    updateCurrentDate(1);
+                    invalidate();
                 }
                 break;
         }
@@ -136,13 +157,24 @@ public class CalendarView extends View {
 
     private int getMonthDays(int year, int month){
         java.util.Calendar calendar = java.util.Calendar.getInstance();
-        calendar.set(java.util.Calendar.DATE, calendar.getActualMaximum(java.util.Calendar.DATE));
+        if(year == 0 || month == 0){
+            calendar.set(java.util.Calendar.DATE, calendar.getActualMaximum(java.util.Calendar.DATE));
+        }else{
+            calendar.set(year,month,1);
+            calendar.set(java.util.Calendar.DATE,calendar.getActualMaximum(java.util.Calendar.DATE));
+        }
         return calendar.get(java.util.Calendar.DAY_OF_MONTH);
     }
 
     private int getFirstDayWeek(int year, int month){
         java.util.Calendar calendar = java.util.Calendar.getInstance();
-        calendar.set(java.util.Calendar.DAY_OF_MONTH,1);
+        if(year == 0 || month == 0){
+            calendar.set(java.util.Calendar.DAY_OF_MONTH,1);
+        }else{
+            calendar.set(year,month,1);
+            selYear = 0;
+            selMonth = 0;
+        }
         return calendar.get(java.util.Calendar.DAY_OF_WEEK);
     }
 }
